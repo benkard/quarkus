@@ -395,8 +395,7 @@ public class UndertowDeploymentRecorder {
                 exchange.setReadTimeout(readTimeout.toMillis());
 
                 UndertowOptionMap.Builder undertowOptions = UndertowOptionMap.builder();
-                Optional<Integer> maxParameters = servletRuntimeConfig.maxParameters;
-                undertowOptions.set(UndertowOptions.MAX_PARAMETERS, maxParameters.orElse(0));
+                undertowOptions.set(UndertowOptions.MAX_PARAMETERS, servletRuntimeConfig.maxParameters.orElse(0));
                 exchange.setUndertowOptions(undertowOptions.getMap());
 
                 //we eagerly dispatch to the exector, as Undertow needs to be blocking anyway
