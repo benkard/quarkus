@@ -21,12 +21,6 @@ public class ServerLimitsConfig {
     public Optional<MemorySize> maxBodySize;
 
     /**
-     * The maximum number of request parameters.
-     */
-    @ConfigItem(defaultValue = "1000")
-    public Optional<Integer> maxParameters;
-
-    /**
      * The max HTTP chunk size
      */
     @ConfigItem(defaultValue = "8192")

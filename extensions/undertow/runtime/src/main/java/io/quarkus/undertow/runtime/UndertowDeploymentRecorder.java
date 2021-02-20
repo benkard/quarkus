@@ -395,7 +395,7 @@ public class UndertowDeploymentRecorder {
                 exchange.setReadTimeout(readTimeout.toMillis());
 
                 UndertowOptionMap.Builder undertowOptions = UndertowOptionMap.builder();
-                Optional<Integer> maxParameters = httpConfiguration.limits.maxParameters;
+                Optional<Integer> maxParameters = servletRuntimeConfig.maxParameters;
                 undertowOptions.set(UndertowOptions.MAX_PARAMETERS, maxParameters.orElse(0));
                 exchange.setUndertowOptions(undertowOptions.getMap());
 

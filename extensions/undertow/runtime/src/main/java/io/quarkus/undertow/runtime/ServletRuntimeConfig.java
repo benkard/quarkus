@@ -26,4 +26,13 @@ public class ServletRuntimeConfig {
     @ConfigItem
     Optional<Boolean> directBuffers;
 
+    /**
+     * The maximum number of HTTP request parameters permitted for Servlet requests.
+     *
+     * Corresponds to the
+     * <a href="https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#common-listener-options">{@code MAX_PARAMETERS}
+     * option</a> in Undertow.
+     */
+    @ConfigItem(defaultValue = "1000")
+    Optional<Integer> maxParameters;
 }
