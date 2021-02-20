@@ -54,6 +54,8 @@ import io.quarkus.vertx.http.runtime.VertxHttpRecorder;
 import io.quarkus.vertx.http.runtime.security.QuarkusHttpUser;
 import io.undertow.httpcore.BufferAllocator;
 import io.undertow.httpcore.StatusCodes;
+import io.undertow.httpcore.UndertowOptionMap;
+import io.undertow.httpcore.UndertowOptions;
 import io.undertow.security.api.AuthenticationMode;
 import io.undertow.security.api.NotificationReceiver;
 import io.undertow.security.api.SecurityNotification;
@@ -377,17 +379,26 @@ public class UndertowDeploymentRecorder {
                 if (!event.request().isEnded()) {
                     event.request().pause();
                 }
+
                 //we handle auth failure directly
                 event.remove(QuarkusHttpUser.AUTH_FAILURE_HANDLER);
+
                 VertxHttpExchange exchange = new VertxHttpExchange(event.request(), allocator, executorService, event,
                         event.getBody());
                 exchange.setPushHandler(VertxHttpRecorder.getRootHandler());
+
                 Optional<MemorySize> maxBodySize = httpConfiguration.limits.maxBodySize;
                 if (maxBodySize.isPresent()) {
                     exchange.setMaxEntitySize(maxBodySize.get().asLongValue());
                 }
                 Duration readTimeout = httpConfiguration.readTimeout;
                 exchange.setReadTimeout(readTimeout.toMillis());
+
+                UndertowOptionMap.Builder undertowOptions = UndertowOptionMap.builder();
+                Optional<Integer> maxParameters = httpConfiguration.limits.maxParameters;
+                undertowOptions.set(UndertowOptions.MAX_PARAMETERS, maxParameters.orElse(0));
+                exchange.setUndertowOptions(undertowOptions.getMap());
+
                 //we eagerly dispatch to the exector, as Undertow needs to be blocking anyway
                 //its actually possible to be on a different IO thread at this point which confuses Undertow
                 //see https://github.com/quarkusio/quarkus/issues/7782
