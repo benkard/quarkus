@@ -36,8 +36,8 @@ public class MaxParametersTestCase {
 
     @Test
     public void testLargeRequest() {
-        // At the moment, a throw of io.undertow.util.ParameterLimitException causes a failure
-        // to respond to the HTTP request.
+        // A throw of io.undertow.util.ParameterLimitException causes Undertow to close the
+        // connection immediately without responding to the HTTP request.
         Assertions.assertThrows(SocketTimeoutException.class, () -> RestAssured.given()
                 .params(generateParameters(11))
                 .get("/test")
