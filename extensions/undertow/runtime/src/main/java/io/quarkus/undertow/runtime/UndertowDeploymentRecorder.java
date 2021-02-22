@@ -373,6 +373,11 @@ public class UndertowDeploymentRecorder {
         UndertowBufferAllocator allocator = new UndertowBufferAllocator(
                 servletRuntimeConfig.directBuffers.orElse(DEFAULT_DIRECT_BUFFERS), (int) servletRuntimeConfig.bufferSize
                         .orElse(new MemorySize(BigInteger.valueOf(DEFAULT_BUFFER_SIZE))).asLongValue());
+
+        UndertowOptionMap.Builder undertowOptions = UndertowOptionMap.builder();
+        undertowOptions.set(UndertowOptions.MAX_PARAMETERS, servletRuntimeConfig.maxParameters.orElse(0));
+        UndertowOptionMap undertowOptionMap = undertowOptions.getMap();
+
         return new Handler<RoutingContext>() {
             @Override
             public void handle(RoutingContext event) {
@@ -394,9 +399,7 @@ public class UndertowDeploymentRecorder {
                 Duration readTimeout = httpConfiguration.readTimeout;
                 exchange.setReadTimeout(readTimeout.toMillis());
 
-                UndertowOptionMap.Builder undertowOptions = UndertowOptionMap.builder();
-                undertowOptions.set(UndertowOptions.MAX_PARAMETERS, servletRuntimeConfig.maxParameters.orElse(0));
-                exchange.setUndertowOptions(undertowOptions.getMap());
+                exchange.setUndertowOptions(undertowOptionMap);
 
                 //we eagerly dispatch to the exector, as Undertow needs to be blocking anyway
                 //its actually possible to be on a different IO thread at this point which confuses Undertow

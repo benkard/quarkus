@@ -29,9 +29,7 @@ public class ServletRuntimeConfig {
     /**
      * The maximum number of HTTP request parameters permitted for Servlet requests.
      *
-     * Corresponds to the
-     * <a href="https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#common-listener-options">{@code MAX_PARAMETERS}
-     * option</a> in Undertow.
+     * If a client sends more than this number of parameters in a request, the connection is closed.
      */
     @ConfigItem(defaultValue = "1000")
     Optional<Integer> maxParameters;
